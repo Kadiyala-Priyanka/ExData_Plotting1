@@ -1,0 +1,15 @@
+df <- read.table("household_power_consumption.txt", sep = ";", stringsAsFactors = FALSE, header = TRUE, na.strings = "?", colClasses = c('character','character','numeric','numeric','numeric','numeric','numeric','numeric','numeric'))
+df$Date <- as.Date(df$Date,"%d/%m/%Y")
+df <- df[df$Date >= as.Date("2007-02-01") & df$Date <= as.Date("2007-02-02"),]
+df <- df[complete.cases(df),]
+df$DateTime <- as.POSIXct(paste(df$Date,df$Time))
+with(df, { plot(Global_active_power ~ DateTime, type = "l", xlab = "", ylab = "Global Active Power")
+  plot(Voltage ~ DateTime, type = "l", xlab = "datetime", ylab = "Voltage")
+  plot(Sub_metering_1 ~ DateTime, type = "l", xlab = "", ylab = "Energy sub metering") 
+  lines(Sub_metering_2 ~ DateTime, col = 'Red')
+  lines(Sub_metering_3 ~ DateTime, col = 'Blue')
+  legend("topright", col = c("black","red","blue"), lty=c(1,1,1), bty="n", cex=.5, legend = c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+  plot(Global_reactive_power ~ DateTime, type = "l", xlab = "datetime", ylab = "Global_reactive_power") })
+par(mfrow=c(2,2), mar=c(4,4,2,1), oma=c(0,0,2,0))
+dev.copy(png,"plot4.png", width = 480, height = 480)
+dev.off()
